@@ -15,7 +15,8 @@ from shutil import which
 from ...common import json_from_file
 from ...remote_cmd import RemoteCmd
 from .common import UNKNOWN_MODE_MSG, NO_X_AXIS_MSG, BS_VALUES, \
-                    result_append, result_is_done, print_start_message
+                    result_append, result_is_done, print_start_message, \
+                    CPU_LOAD_00_99, CPU_LOAD_75_99, THREADS_VALUES
 
 UNKNOWN_RW_MSG = "An unexpected 'rw' value: {}"
 UNKNOWN_FILETYPE_MSG = "An unexpected 'filetype' value: {}"
@@ -62,6 +63,8 @@ class FioRunner:
             raise ValueError(UNKNOWN_RW_MSG.format(readwrite))
         # pick the settings predefined for the chosen mode
         self.__mode = self.__benchmark.oneseries['mode']
+        self.__cpu_load_range = "CPU_LOAD_" + self.__config['CPU_LOAD_RANGE']
+        self.__cpu_load_range_values = eval(self.__cpu_load_range)
         self.__settings = self.__SETTINGS_BY_MODE.get(self.__mode, None)
         if not isinstance(self.__settings, dict):
             raise NotImplementedError(UNKNOWN_MODE_MSG.format(self.__mode))
@@ -80,6 +83,9 @@ class FioRunner:
             self.__results = {'input_file': idfile, 'json': []}
         self.__data = self.__results['json']
         self.__validate()
+        # set 'threads' to CORES_PER_SOCKET in the 'bw-cpu-mt' mode
+        if self.__mode == 'bw-cpu-mt':
+            self.__settings['threads'] = config['CORES_PER_SOCKET']
 
     def __server_start(self, settings):
         # XXX to be removed when the implementation will be complete
@@ -204,13 +210,71 @@ class FioRunner:
             # XXX remote_command --post
             self.__result_append(x_value, y_value)
 
-    __X_KEYS = ['threads', 'bs', 'iodepth', 'cpuload']
+    __X_KEYS = ['threads', 'bs', 'iodepth']
+
+    __BW_DP_EXP_DEPTHS = [1, 2, 4, 8, 16, 32, 64, 128]
+    __BW_DP_LIN_DEPTHS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    __cpu_load_range = "" # will be set in __init__
+    __cpu_load_range_values = [] # will be set in __init__
 
     __SETTINGS_BY_MODE = {
+        'bw-bs': {
+            'threads': 1,
+            'bs': BS_VALUES,
+            'iterations': len(BS_VALUES),
+            'iodepth': 2,
+            'sync': False
+            },
+        'bw-dp-exp': {
+            'threads': 1,
+            'bs': 4096,
+            'iodepth': __BW_DP_EXP_DEPTHS,
+            'iterations': len(__BW_DP_EXP_DEPTHS),
+            'sync': False
+            },
+        'bw-dp-lin': {
+            'threads': 1,
+            'bs': 4096,
+            'iodepth': __BW_DP_LIN_DEPTHS,
+            'iterations': len(__BW_DP_LIN_DEPTHS),
+            'sync': False
+            },
+        'bw-th': {
+            'threads': THREADS_VALUES,
+            'bs': 4096,
+            'iodepth': 2,
+            'iterations': len(THREADS_VALUES),
+            'sync': False
+            },
+        'bw-cpu': {
+            'threads': 1,
+            'bs': 65536,
+            'iodepth': 2,
+            'cpuload': __cpu_load_range_values,
+            'iterations': len(__cpu_load_range_values),
+            'sync': False
+            },
+        'bw-cpu-mt': {
+            'threads': 0, # will be set to CORES_PER_SOCKET in __init__
+            'bs': 4096,
+            'iodepth': 2,
+            'cpuload': __cpu_load_range_values,
+            'iterations': len(__cpu_load_range_values),
+            'sync': False
+            },
         'lat': {
             'threads': 1,
             'bs': BS_VALUES,
             'iodepth': 1,
-            'sync': True}
+            'iterations': len(BS_VALUES),
+            'sync': True
+            },
+        'lat-cpu': {
+            'threads': 1,
+            'bs': 4096,
+            'iodepth': 1,
+            'cpuload': __cpu_load_range_values,
+            'iterations': len(__cpu_load_range_values),
+            'sync': True
+            }
     }
-    # XXX TBD
