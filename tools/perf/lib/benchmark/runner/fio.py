@@ -70,6 +70,29 @@ class FioRunner:
             self.__settings['cpuload'] = cpu_load_range
             self.__settings['iterations'] = len(cpu_load_range)
 
+    __CPU_LOAD_RANGE = {
+        '00_99' : [0, 25, 50, 75, 99],
+        '75_99' : [75, 80, 85, 90, 95, 99]
+    }
+
+    def __set_settings_by_mode(self):
+        """set all variable elements of __SETTINGS_BY_MODE"""
+        # set 'threads' to CORES_PER_SOCKET in the 'bw-cpu-mt' mode
+        if self.__mode == 'bw-cpu-mt':
+            self.__settings['threads'] = self.__config['CORES_PER_SOCKET']
+        # set values of 'cpuload' and their 'iterations':
+        if 'cpu' in self.__mode:
+            if 'cpu_load_range' in self.__benchmark.oneseries:
+                cpu_load = self.__benchmark.oneseries['cpu_load_range']
+            else:
+                cpu_load = '00_99'
+            if cpu_load not in self.__CPU_LOAD_RANGE:
+                raise ValueError('wrong value of \'cpu_load_range\': {}'
+                                 .format(cpu_load))
+            cpu_load_range = self.__CPU_LOAD_RANGE[cpu_load]
+            self.__settings['cpuload'] = cpu_load_range
+            self.__settings['iterations'] = len(cpu_load_range)
+
     def __init__(self, benchmark, config: dict, idfile: str) -> 'FioRunner':
         # XXX nice to have REMOTE_JOB_NUMA_CPULIST, CORES_PER_SOCKET
         self.__benchmark = benchmark
@@ -284,8 +307,7 @@ class FioRunner:
 
     __BW_DP_EXP_DEPTHS = [1, 2, 4, 8, 16, 32, 64, 128]
     __BW_DP_LIN_DEPTHS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-    # __THREADS_VALUES = [1, 2, 4, 8, 12, 16, 32, 64]
-    __THREADS_VALUES = [1, 2, 4, 8]
+    __THREADS_VALUES = [1, 2, 4, 8, 12, 16, 32, 64]
 
     __SETTINGS_BY_MODE = {
         'bw-bs': {
@@ -343,8 +365,8 @@ class FioRunner:
             'threads': 1,
             'bs': 4096,
             'iodepth': 1,
-            'cpuload': [], # will be set in __init__
-            'iterations': 0, # will be set in __init__
+            'cpuload': [], # will be set in __init__,
+            'iterations': 0, # will be set in __init__,
             'sync': True
             }
     }
