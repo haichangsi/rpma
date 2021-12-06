@@ -196,6 +196,9 @@ class Benchmark:
             runner = BaseRunner
 
         idfile = get_result_path(result_dir, self.identifier)
+
+        print('>>> __oneseries = {}'.format(self.__oneseries))
+
         runner.run(self, config, idfile)
         self.__oneseries['done'] = True
 

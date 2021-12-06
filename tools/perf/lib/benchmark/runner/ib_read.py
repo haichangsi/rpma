@@ -142,6 +142,7 @@ class IbReadRunner:
         """run the client (locally) and wait till the end of execution"""
         numa_n = str(self.__config['JOB_NUMA'])
         it_opt = '--iters=' + str(settings['iterations'])
+        it_opt = '--iters=1000' # XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
         aux_params = [*settings['args']]
         cfg_aux_params = self.__config['AUX_PARAMS'].split(' ')
         if cfg_aux_params != ['']:
@@ -149,6 +150,8 @@ class IbReadRunner:
         server_ip = self.__config['server_ip']
         args = ['numactl', '-N', numa_n, self.__ib_path, *aux_params,
                 it_opt, server_ip]
+
+        print('$ {}'.format(' '.join(args)))
 
         # XXX add option to dump the command (DUMP_CMDS)
         # XXX optionally measure the run time and assert exe_time >= 60s
@@ -246,9 +249,6 @@ class IbReadRunner:
                 8192: 24475088,
                 16384: 23630690,
                 32768: 8299603,
-                65536: 5001135,
-                131072: 4800000,
-                262144: 2600000
             }
         },
         'bw-dp-exp': {
@@ -289,7 +289,7 @@ class IbReadRunner:
         },
         'bw-th': {
             'ib_tool': 'ib_read_bw',
-            'threads': [1, 2, 4, 8, 12],
+            'threads': [1, 2, 4, 8],
             'bs': 4096,
             'iodepth': 2,
             # values measured empirically, so that duration was ~60s
@@ -314,9 +314,6 @@ class IbReadRunner:
                 8192:   16778088,
                 16384:  11423082,
                 32768:  8138946,
-                65536:  6002473,
-                131072: 3600000,
-                262144: 2100000
             }
         }
     }

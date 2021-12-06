@@ -44,5 +44,8 @@ class Dummy:
             }
         else:
             output = [cls.__random_point() for _ in range(3)]
+
+        print('>>> json.dump() -> {}'.format(idfile))
+
         with open(idfile, 'w', encoding='utf-8') as file:
             json.dump(output, file, indent=4)

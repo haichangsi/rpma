@@ -35,6 +35,7 @@ class BaseRunner:
             config: the configuration of the benchmarking system.
             idfile: the output file to store the results.
         """
+        print(benchmark.oneseries)
         runner_cls = cls.__RUNNERS.get(benchmark.oneseries['tool'], None)
         if runner_cls is None:
             raise NotImplementedError()

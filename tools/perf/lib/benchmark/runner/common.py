@@ -20,7 +20,8 @@ NO_X_AXIS_MSG = \
     "SETTINGS_BY_MODE[{}] is missing a key defined as a list (x-axis)"
 
 #: a common block sizes list
-BS_VALUES = [256, 1024, 4096, 8192, 16384, 32768, 65536, 131072, 262144]
+# BS_VALUES = [256, 1024, 4096, 8192, 16384, 32768, 65536, 131072, 262144]
+BS_VALUES = [256, 1024, 4096, 8192, 16384, 32768]
 
 def result_append(data: list, idfile: str, result: dict) -> None:
     """append new result to internal data and file"""

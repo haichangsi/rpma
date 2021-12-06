@@ -162,6 +162,11 @@ class Bench:
         config['REMOTE_JOB_NUMA_CPULIST'] = get_remote_job_numa_cpulist(config)
         config['CORES_PER_SOCKET'] = get_cores_per_socket(config)
 
+        print('>>> REMOTE_JOB_NUMA_CPULIST = {}'
+              .format(config['REMOTE_JOB_NUMA_CPULIST']))
+        print('>>> CORES_PER_SOCKET = {}'
+              .format(config['CORES_PER_SOCKET']))
+
         # create and return a 'Bench' object
         return cls(config, parts, figures, requirements, result_dir)
 
