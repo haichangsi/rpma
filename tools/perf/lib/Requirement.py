@@ -240,8 +240,10 @@ class Requirement:
             args = ['sudo', remote_ddio, '-d', port, '-q']
             rv = RemoteCmd.run_sync(config, args)
             if rv.exit_status != ddio_query:
-                raise ValueError('setting DDIO to \'{}\' failed'
-                                 .format(ddio_mode))
+                print('>>> setting DDIO to \'{}\' failed !!!!!!!'
+                      .format(ddio_mode))
+            else:
+                print('>>> DDIO was set to \'{}\' :-)'.format(ddio_mode))
 
         @classmethod
         def is_met(cls, req, config):
