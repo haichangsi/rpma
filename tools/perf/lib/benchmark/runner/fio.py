@@ -164,12 +164,12 @@ class FioRunner:
                 '--filename_format={}.\\$jobnum'.format(pmem_path))
         # XXX nice to have REMOTE_TRACER
         # copy the job file to the server
-        r_job_path = self.__config.get('REMOTE_JOB_PATH',
-                                       '/dev/shm/librpma_{}-server.fio'\
-                                       .format(self.__tool_mode))
-        RemoteCmd.copy_to_remote(self.__config,
-                                 "./fio_jobs/librpma_{}-server.fio"\
-                                 .format(self.__tool_mode), r_job_path)
+        def_path = '/dev/shm/librpma_{}-server.fio'.format(self.__tool_mode)
+        r_job_path = self.__config.get('REMOTE_JOB_PATH', def_path)
+        if r_job_path == '':
+            r_job_path = def_path
+        job_file = "./fio_jobs/librpma_{}-server.fio".format(self.__tool_mode)
+        RemoteCmd.copy_to_remote(self.__config, job_file, r_job_path)
         # XXX add option to dump the command (DUMP_CMDS)
         self.__server = RemoteCmd.run_async(self.__config, args, env)
         time.sleep(0.1) # wait 0.1 sec for server to start listening
