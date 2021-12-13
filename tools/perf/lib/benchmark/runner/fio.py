@@ -170,7 +170,10 @@ class FioRunner:
             r_job_path = def_path
         job_file = "./fio_jobs/librpma_{}-server.fio".format(self.__tool_mode)
         RemoteCmd.copy_to_remote(self.__config, job_file, r_job_path)
+        args.append(r_job_path)
         # XXX add option to dump the command (DUMP_CMDS)
+        print('env = {}'.format(env))
+        print('[server]$ {}'.format(' '.join(args)))
         self.__server = RemoteCmd.run_async(self.__config, args, env)
         time.sleep(0.1) # wait 0.1 sec for server to start listening
 
@@ -179,6 +182,7 @@ class FioRunner:
         self.__server.wait()
         stdout = self.__server.stdout.read().decode().strip()
         stderr = self.__server.stderr.read().decode().strip()
+        print('\nstdout:\n{}\nstderr:\n{}\n'.format(stdout, stderr))
         with open(settings['logfile_server'], 'w', encoding='utf-8') as log:
             log.write('\nstdout:\n{}\nstderr:\n{}\n'.format(stdout, stderr))
 
