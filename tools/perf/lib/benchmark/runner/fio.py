@@ -194,10 +194,10 @@ class FioRunner:
     }
 
     def __client_run(self, settings):
+        """run the client (locally) and wait till the end of execution"""
         # pylint: disable=unused-variable
         short_runtime = self.__config.get('SHORT_RUNTIME', False)
         c_time = self.__TIME['short' if short_runtime else 'full']
-        args = []
         env = {
             'serverip': self.__config['server_ip'],
             'numjobs': settings['threads'],
@@ -208,13 +208,30 @@ class FioRunner:
             'ramp_time': c_time['ramp'],
             'runtime': c_time['run']
         }
-        # XXX run the client (locally) and wait till the end of execution
+        if 'TRACER' in self.__config and self.__config['TRACER'] != '':
+            env['TRACER'] = self.__config['TRACER']
+        else:
+            env['TRACER'] = 'numactl -N ' + str(self.__config['JOB_NUMA'])
+
+        fio_path = join(self.__config.get('FIO_PATH', ''),
+                        self.__benchmark.oneseries.get('tool', 'fio'))
+        persist_mode = self.__benchmark.oneseries['tool_mode']
+        job_file = './fio_jobs/librpma_{}-client.fio'.format(persist_mode)
+        args = [fio_path, job_file, '--output-format=json+']
+        # stdout > $TEMP_JSON
+
+        print('[client]$ {}'.format(' '.join(args)))
         # XXX add option to dump the command (DUMP_CMDS)
         # XXX convert the fio_json2csv.py script into a module?
         # XXX return the measured value (Note: self.__result_keys)
         # XXX convert the ./csv2standardized.py script into a module?
         # in case of a mixed workload the result is a tuple
-        return 0
+        x_value = settings[self.__x_key]
+        return {
+            'bs': x_value,
+            'threads': x_value,
+            'cpuload': x_value,
+        }
 
     def __result_append(self, _, y_value: dict):
         """append new result to internal __data and the '__idfile' file"""
