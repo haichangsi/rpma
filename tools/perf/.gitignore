@@ -2,6 +2,7 @@ __pycache__
 doc
 *.png
 config.json
+dev_config.json
 report.json
 report_*
 !report_bench.py
