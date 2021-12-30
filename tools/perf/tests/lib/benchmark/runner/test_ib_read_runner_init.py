@@ -47,8 +47,8 @@ def test_ib_read_runner_init(oneseries_ib_read, config_ib_read, monkeypatch):
     benchmark = lib.benchmark.Benchmark(oneseries_ib_read)
     runner = IbReadRunner(benchmark, config_ib_read, 'idfile')
     runner.run()
-
     #pylint: disable=protected-access
+<<<<<<< HEAD
     #pylint: disable=no-member
     assert runner._IbReadRunner__benchmark == benchmark
     assert runner._IbReadRunner__config == config_ib_read
@@ -56,6 +56,20 @@ def test_ib_read_runner_init(oneseries_ib_read, config_ib_read, monkeypatch):
     assert runner._IbReadRunner__tool == oneseries_ib_read['tool']
     assert runner._IbReadRunner__mode == oneseries_ib_read['mode']
     #pylint: enable=no-member
+||||||| parent of d67370f1 (tools: Runner class introduction)
+    assert runner._IbReadRunner__benchmark == benchmark
+    assert runner._IbReadRunner__config == config_ib_read
+    assert runner._IbReadRunner__idfile == 'idfile'
+    assert runner._IbReadRunner__tool == oneseries_ib_read['tool']
+    assert runner._IbReadRunner__mode == oneseries_ib_read['mode']
+=======
+    assert runner._benchmark == benchmark
+    assert runner._config == config_ib_read
+    assert runner._idfile == 'idfile'
+    assert runner._tool == oneseries_ib_read['tool']
+    assert runner._tool_mode == oneseries_ib_read['tool_mode']
+    assert runner._mode == oneseries_ib_read['mode']
+>>>>>>> d67370f1 (tools: Runner class introduction)
     #pylint: enable=protected-access
 
 # XXX 'requirements' is not yet supported by IbReadRunner - to be added later
@@ -75,7 +89,15 @@ def test_ib_read_runner_init_no_config(oneseries_ib_read):
     """failed initialization of IbReadRunner object - no config provided"""
     oneseries = {**oneseries_ib_read}
     benchmark = lib.benchmark.Benchmark(oneseries)
+<<<<<<< HEAD
     with pytest.raises(AttributeError):
+||||||| parent of d67370f1 (tools: Runner class introduction)
+
+    with pytest.raises(AttributeError):
+=======
+
+    with pytest.raises(RuntimeError):
+>>>>>>> d67370f1 (tools: Runner class introduction)
         IbReadRunner(benchmark, None, 'idfile')
 
 @pytest.mark.parametrize('key', ['SERVER_IP'])
