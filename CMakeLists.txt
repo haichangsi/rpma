@@ -54,8 +54,8 @@ option(TESTS_USE_VALGRIND_PMEMCHECK "enable tests with valgrind pmemcheck (if fo
 option(TESTS_LONG "enable long running tests" OFF)
 option(TEST_PYTHON_TOOLS "run tests for Python tools" ON)
 
-option(DEBUG_LOG_TRACE "enable logging function traces" OFF)
-option(DEBUG_FAULT_INJECTION "enable fault injection" OFF)
+option(DEBUG_LOG_TRACE "enable logging function traces" ON)
+option(DEBUG_FAULT_INJECTION "enable fault injection" ON)
 
 # Do not treat include directories from the interfaces
 # of consumed Imported Targets as SYSTEM by default.
@@ -291,3 +291,6 @@ add_custom_target(run_all_examples
 
 add_custom_target(run_all_examples_under_valgrind
 	COMMAND ${CMAKE_SOURCE_DIR}/examples/run-all-on-SoftRoCE.sh ${CMAKE_BINARY_DIR}/examples --valgrind)
+
+add_custom_target(run_all_examples_under_valgrind_fi
+	COMMAND ${CMAKE_SOURCE_DIR}/examples/run-all-on-SoftRoCE-fi.sh ${CMAKE_BINARY_DIR}/examples --valgrind)
