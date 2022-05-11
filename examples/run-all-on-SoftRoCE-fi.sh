@@ -219,7 +219,7 @@ CFAILED=""
 
 # main fault-injection loop
 # for fault_inject in $(seq 25 100); do
-for fault_inject in $(seq 1 60); do
+for fault_inject in $(seq 40 40); do
 
 	# run fault-injection on the server
 	for srv in $(find $BIN_DIR -name server | sort); do
@@ -235,7 +235,7 @@ for fault_inject in $(seq 1 60); do
 			exit 1
 		fi
 		# XXX test only 01-05 examples
-		[ "$(basename $DIR)" == "05-flush-to-persistent" ] && break;
+		[ "$(basename $DIR)" == "04-write-to-persistent" ] && break;
 	done
 
 	# run fault-injection on the client
@@ -252,7 +252,7 @@ for fault_inject in $(seq 1 60); do
 			exit 1
 		fi
 		# XXX test only 01-05 examples
-		[ "$(basename $DIR)" == "05-flush-to-persistent" ] && break;
+		[ "$(basename $DIR)" == "04-write-to-persistent" ] && break;
 	done
 done
 
