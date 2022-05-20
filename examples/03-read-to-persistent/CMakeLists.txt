@@ -44,6 +44,7 @@ function(add_example name)
 	elseif (LIBPMEM_FOUND)
 		set(srcs ${srcs} ../common/common-pmem_map_file.c)
 	endif()
+	set(srcs ${srcs} ../common/common-client_pmem_signature_check.c)
 	add_executable(${name} ${srcs})
 	target_include_directories(${name}
 		PRIVATE

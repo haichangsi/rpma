@@ -61,11 +61,14 @@ function(add_example)
 
 	prepend(srcs ${CMAKE_CURRENT_SOURCE_DIR} ${srcs})
 	if (LIBPMEM2_FOUND)
-		add_executable(${target} ${EXAMPLE_SRCS} common/common-pmem2_map_file.c)
+		add_executable(${target} ${EXAMPLE_SRCS} common/common-pmem2_map_file.c
+			common/common-client_pmem_signature_check.c)
 	elseif (LIBPMEM_FOUND)
-		add_executable(${target} ${EXAMPLE_SRCS} common/common-pmem_map_file.c)
+		add_executable(${target} ${EXAMPLE_SRCS} common/common-pmem_map_file.c
+			common/common-client_pmem_signature_check.c)
 	else()
-		add_executable(${target} ${EXAMPLE_SRCS})
+		add_executable(${target} ${EXAMPLE_SRCS} 
+			common/common-client_pmem_signature_check.c)
 	endif()
 	add_dependencies(examples ${target})
 	set_target_properties(${target} PROPERTIES
