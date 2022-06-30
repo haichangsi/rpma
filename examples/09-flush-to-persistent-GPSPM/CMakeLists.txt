@@ -1,16 +1,18 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
-# Copyright 2020, Intel Corporation
+# Copyright 2020-2022, Intel Corporation
 # Copyright 2021, Fujitsu
 #
 
 cmake_minimum_required(VERSION 3.3)
 project(flush-to-persistent C)
 
+set(options USE_LIBPROTOBUFC)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
 	${CMAKE_SOURCE_DIR}/../cmake
 	${CMAKE_SOURCE_DIR}/../../cmake)
 
+include(${CMAKE_SOURCE_DIR}/../cmake/common.cmake)
 include(${CMAKE_SOURCE_DIR}/../../cmake/functions.cmake)
 # set LIBRT_LIBRARIES if linking with librt is required
 check_if_librt_is_required()
@@ -40,27 +42,5 @@ endif()
 
 link_directories(${LIBRPMA_LIBRARY_DIRS})
 
-function(add_example name)
-	set(srcs ${ARGN})
-	add_executable(${name} ${srcs})
-	target_include_directories(${name}
-		PRIVATE
-			${LIBRPMA_INCLUDE_DIRS}
-			../common)
-	target_link_libraries(${name} rpma ${LIBIBVERBS_LIBRARIES} ${LIBRT_LIBRARIES})
-
-	if(LIBPMEM_FOUND)
-		target_include_directories(${name}
-			PRIVATE ${LIBPMEM_INCLUDE_DIRS})
-		target_link_libraries(${name} ${LIBPMEM_LIBRARIES})
-		target_compile_definitions(${name}
-			PRIVATE USE_LIBPMEM)
-	endif()
-	
-	target_include_directories(${name}
-		PRIVATE ${LIBPROTOBUFC_INCLUDE_DIRS})
-	target_link_libraries(${name} ${LIBPROTOBUFC_LIBRARIES})
-endfunction()
-
-add_example(server server.c GPSPM_flush.pb-c.c ../common/common-conn.c)
-add_example(client client.c GPSPM_flush.pb-c.c ../common/common-conn.c)
+add_example_with_pmem(server USE_LIBPROTOBUFC server.c GPSPM_flush.pb-c.c ../common/common-conn.c)
+add_example_with_pmem(client USE_LIBPROTOBUFC client.c GPSPM_flush.pb-c.c ../common/common-conn.c)
