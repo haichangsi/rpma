@@ -103,8 +103,8 @@ rpma_log_set_function(rpma_log_function *log_function)
 #else
 	uintptr_t log_function_old = Rpma_log_function;
 
-	if (__sync_bool_compare_and_swap(&Rpma_log_function,
-			log_function_old, (uintptr_t)log_function))
+	if (__sync_bool_compare_and_swap(&Rpma_log_function, log_function_old,
+			(uintptr_t)log_function))
 		return 0;
 	else
 		return RPMA_E_AGAIN;
@@ -123,8 +123,7 @@ int mock__sync_bool_compare_and_swap__threshold(enum rpma_log_level *ptr,
  * rpma_log_set_threshold -- set the log level threshold
  */
 int
-rpma_log_set_threshold(enum rpma_log_threshold threshold,
-			enum rpma_log_level level)
+rpma_log_set_threshold(enum rpma_log_threshold threshold, enum rpma_log_level level)
 {
 	if (threshold != RPMA_LOG_THRESHOLD && threshold != RPMA_LOG_THRESHOLD_AUX)
 		return RPMA_E_INVAL;
@@ -155,8 +154,7 @@ rpma_log_set_threshold(enum rpma_log_threshold threshold,
  * rpma_log_get_threshold -- get the log level threshold
  */
 int
-rpma_log_get_threshold(enum rpma_log_threshold threshold,
-			enum rpma_log_level *level)
+rpma_log_get_threshold(enum rpma_log_threshold threshold, enum rpma_log_level *level)
 {
 	if (threshold != RPMA_LOG_THRESHOLD && threshold != RPMA_LOG_THRESHOLD_AUX)
 		return RPMA_E_INVAL;

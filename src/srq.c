@@ -121,8 +121,8 @@ rpma_srq_delete(struct rpma_srq **srq_ptr)
  * rpma_srq_recv -- initiate the receive operation in shared RQ
  */
 int
-rpma_srq_recv(struct rpma_srq *srq, struct rpma_mr_local *dst,
-	size_t offset, size_t len, const void *op_context)
+rpma_srq_recv(struct rpma_srq *srq, struct rpma_mr_local *dst, size_t offset, size_t len,
+	const void *op_context)
 {
 	RPMA_DEBUG_TRACE;
 	RPMA_FAULT_INJECTION(RPMA_E_INVAL, {});

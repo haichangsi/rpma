@@ -41,15 +41,13 @@ rpma_cq_get_ibv_cq(const struct rpma_cq *cq)
 }
 
 /*
- * rpma_cq_new -- create a completion channel and CQ and then
- * encapsulate them in a rpma_cq object
+ * rpma_cq_new -- create a completion channel and CQ and then encapsulate them in a rpma_cq object
  *
  * ASSUMPTIONS
  * - ibv_ctx != NULL && cq_ptr != NULL
  */
 int
-rpma_cq_new(struct ibv_context *ibv_ctx, int cqe,
-		struct ibv_comp_channel *shared_channel,
+rpma_cq_new(struct ibv_context *ibv_ctx, int cqe, struct ibv_comp_channel *shared_channel,
 		struct rpma_cq **cq_ptr)
 {
 	RPMA_DEBUG_TRACE;
@@ -64,18 +62,15 @@ rpma_cq_new(struct ibv_context *ibv_ctx, int cqe,
 		RPMA_FAULT_INJECTION(RPMA_E_PROVIDER, {});
 		channel = ibv_create_comp_channel(ibv_ctx);
 		if (channel == NULL) {
-			RPMA_LOG_ERROR_WITH_ERRNO(errno,
-					"ibv_create_comp_channel()");
+			RPMA_LOG_ERROR_WITH_ERRNO(errno, "ibv_create_comp_channel()");
 			return RPMA_E_PROVIDER;
 		}
 	}
 
 	/* create a CQ */
 	RPMA_FAULT_INJECTION_GOTO(RPMA_E_PROVIDER, err_destroy_comp_channel);
-	struct ibv_cq *cq = ibv_create_cq(ibv_ctx, cqe,
-				NULL /* cq_context */,
-				channel /* channel */,
-				0 /* comp_vector */);
+	struct ibv_cq *cq = ibv_create_cq(ibv_ctx, cqe, NULL /* cq_context */,
+				channel /* channel */, 0 /* comp_vector */);
 	if (cq == NULL) {
 		RPMA_LOG_ERROR_WITH_ERRNO(errno, "ibv_create_cq()");
 		ret = RPMA_E_PROVIDER;
@@ -141,8 +136,7 @@ rpma_cq_delete(struct rpma_cq **cq_ptr)
 	if (!cq->shared_comp_channel) {
 		errno = ibv_destroy_comp_channel(cq->channel);
 		if (!ret && errno) {
-			RPMA_LOG_ERROR_WITH_ERRNO(errno,
-				"ibv_destroy_comp_channel()");
+			RPMA_LOG_ERROR_WITH_ERRNO(errno, "ibv_destroy_comp_channel()");
 			ret = RPMA_E_PROVIDER;
 		}
 	}
@@ -157,8 +151,7 @@ rpma_cq_delete(struct rpma_cq **cq_ptr)
 /* public librpma API */
 
 /*
- * rpma_cq_get_fd -- get a file descriptor of the completion event channel
- * from the CQ
+ * rpma_cq_get_fd -- get a file descriptor of the completion event channel from the CQ
  */
 int
 rpma_cq_get_fd(const struct rpma_cq *cq, int *fd)
@@ -246,9 +239,8 @@ rpma_cq_get_wc(struct rpma_cq *cq, int num_entries, struct ibv_wc *wc,
 		RPMA_LOG_ERROR("ibv_poll_cq() failed (no details available)");
 		return RPMA_E_PROVIDER;
 	} else if (result > num_entries) {
-		RPMA_LOG_ERROR(
-			"ibv_poll_cq() returned %d where <= %d is expected",
-			result, num_entries);
+		RPMA_LOG_ERROR("ibv_poll_cq() returned %d where <= %d is expected", result,
+			num_entries);
 		return RPMA_E_UNKNOWN;
 	}
 

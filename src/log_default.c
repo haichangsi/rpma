@@ -93,9 +93,8 @@ err_message:
  * - file == NULL || (file != NULL && function != NULL)
  */
 void
-rpma_log_default_function(enum rpma_log_level level, const char *file_name,
-	const int line_no, const char *function_name,
-	const char *message_format, ...)
+rpma_log_default_function(enum rpma_log_level level, const char *file_name, const int line_no,
+	const char *function_name, const char *message_format, ...)
 {
 	char file_info_buffer[256] = "";
 	const char *file_info = file_info_buffer;
@@ -122,9 +121,8 @@ rpma_log_default_function(enum rpma_log_level level, const char *file_name,
 			/* skip '/' */
 			base_file_name++;
 
-		if (snprintf(file_info_buffer, sizeof(file_info_buffer),
-				"%s: %3d: %s: ", base_file_name, line_no,
-				function_name) < 0) {
+		if (snprintf(file_info_buffer, sizeof(file_info_buffer), "%s: %3d: %s: ",
+				base_file_name, line_no, function_name) < 0) {
 			file_info = file_info_error;
 		}
 	}
@@ -144,8 +142,8 @@ rpma_log_default_function(enum rpma_log_level level, const char *file_name,
 		return;
 
 	/* assumed: level <= Rpma_log_threshold[RPMA_LOG_THRESHOLD] */
-	syslog(rpma_log_level_syslog_severity[level], "%s%s%s",
-		rpma_log_level_names[level], file_info, message);
+	syslog(rpma_log_level_syslog_severity[level], "%s%s%s", rpma_log_level_names[level],
+		file_info, message);
 }
 
 /*
